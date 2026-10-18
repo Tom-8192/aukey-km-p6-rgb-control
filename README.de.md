@@ -111,6 +111,15 @@ sudo systemctl daemon-reload && sudo systemctl enable --now kmp6-off.service
 ```
 Damit die LEDs nach der Anmeldung wieder leuchten, `kmp6_rgbtool on` in den Autostart der Desktopumgebung eintragen.
 
+## Zusammen mit OpenRGB
+
+OpenRGB kennt das Pad als „Holtek Mousemat“ und sendet dasselbe Effekt-Paket, mit fester voller Helligkeit und nur
+Farbplatz 1 (Einzelheiten in [`docs/PROTOCOL.md`](docs/PROTOCOL.md#openrgb)). Beide lassen sich nebeneinander
+benutzen; OpenRGB schreibt nur, wenn es etwas ändert oder ein Profil lädt – etwa bei jedem Start, wenn sein Dienst das
+aktive Profil lädt. Wie beim Knopf bemerkt das Tool so eine Änderung nicht: „Erneut senden“ oder `kmp6_rgbtool on`
+stellt die Einstellung des Tools wieder her. Soll nach jeder Anmeldung die Tool-Einstellung gelten, das Shutdown-Skript
+mit `-LogonOn` installieren; soll nur das Tool das Pad steuern, in OpenRGB den Detektor „Holtek Mousemat“ abschalten.
+
 ## Lizenz
 
 GPL-2.0-or-later, siehe [LICENSE](LICENSE).

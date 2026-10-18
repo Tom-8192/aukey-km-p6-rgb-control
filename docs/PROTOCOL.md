@@ -162,6 +162,25 @@ Static + cycle steps to the next colour about every 0.25 s, with speed byte `00`
 the speed has no effect on static. Breathe + cycle takes the next colour with every breath. The levels in between are
 interpolated with `period = k / (device value + c)` fitted to the measured points; the GUI preview uses these values.
 
+## OpenRGB
+
+OpenRGB (1.1) drives the pad as "Holtek Mousemat" (`Controllers/HoltekController/HoltekA1FAController`, detector on
+interface 2, usage page `FF00`) with the same `08` report and nothing else **[code]**:
+
+| OpenRGB | Report |
+|---|---|
+| modes Static / Breathing / Neon / Rainbow | mode `00` / `01` / `02` / `03` (its "Rainbow" is the wave, direction byte `00` = right) |
+| brightness | always `20` (no brightness control) |
+| speed | raw device value 0-5 (G-aim only uses 0, 1, 3, 4, 5); static sends `00` |
+| colour | slot byte `00` and the colour as slot 1, or `70` for random colour |
+| off | none (black as colour) |
+
+It never sends `09`/`0A`/`0B`, so slots 2-7 keep what the tool or G-aim wrote last. Loading Tom's profile "Gelb" sent
+`08 00 20 00 00 ff ff 00` twice (static yellow) and nothing else; while idle OpenRGB does not talk to the pad at all
+(USBPcap, 20 s and 90 s) **[pad]** (2026-10-18). The OpenRGB service loads its profile when it starts, i.e. before the
+logon, so on Tom's PC the pad is yellow after every boot whatever the tool stored; like the button, the tool does not
+notice. OpenRGB and the tool do not share a lock, but every change of OpenRGB is a single report.
+
 ## Memory
 
 The pad keeps the last setting when it loses power - including "off": switched off and unplugged, it stays dark after

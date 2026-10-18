@@ -106,6 +106,15 @@ sudo systemctl daemon-reload && sudo systemctl enable --now kmp6-off.service
 ```
 To switch the LEDs on again after login, add `kmp6_rgbtool on` to the autostart of your desktop.
 
+## Together with OpenRGB
+
+OpenRGB knows the pad as "Holtek Mousemat" and sends the same effect report, with fixed full brightness and only
+slot 1 (details in [`docs/PROTOCOL.md`](docs/PROTOCOL.md#openrgb)). Both can be used side by side; OpenRGB only
+writes when it changes something or loads a profile - for example at every start, when its service loads the active
+profile. Like the button, the tool does not see such a change: "Send again" or `kmp6_rgbtool on` brings the tool's
+setting back. If the tool's setting should win after every logon, install the shutdown script with `-LogonOn`; if
+only the tool should drive the pad, switch off the "Holtek Mousemat" detector in OpenRGB.
+
 ## License
 
 GPL-2.0-or-later, see [LICENSE](LICENSE).

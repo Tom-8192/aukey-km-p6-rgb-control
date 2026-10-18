@@ -56,6 +56,10 @@ black on screen). Tom does not want seconds shown in the GUI.
 
 Release v0.1.0: `rust` merged into `main` (fast-forward), tag `v0.1.0` (2026-10-18).
 
+OpenRGB (2026-10-18): it drives the pad as "Holtek Mousemat" with the same `08` report (PROTOCOL.md "OpenRGB"); on
+Tom's PC the OpenRGB service loads profile "Gelb" at every start → pad static yellow. Tom decided to leave it like
+that (no logon task, OpenRGB detector stays on); the tool is for changes in between.
+
 ## Guidelines
 
 - Code, comments, docs and commit messages in English; `README.de.md` and `locales/de.yml` German with real umlauts.
@@ -76,6 +80,4 @@ The window saves itself as BMP after 30 frames and closes; the settings file dec
 ## Open
 
 1. Test on Linux (hidraw path, udev rule, systemd unit).
-3. OpenRGB: Tom switches the pad on at startup with OpenRGB - check whether OpenRGB supports the KM-P6 and how it
-   relates to this tool.
 4. Unknown: what the wave direction does; the levels 1 and 3 of neon/wave are interpolated, not measured.
