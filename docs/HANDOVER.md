@@ -50,6 +50,11 @@ GUI only with `--fake` via `dev-screenshot` pictures.
 GUI after Tom's wish "show the behaviour of the pad better" (2026-10-18): drawing after his product photo
 (`preview.rs`, shapes only), speeds measured on the pad (PROTOCOL.md "Timing"), the button modelled
 (`Settings::after_button`, GUI button "Pressed the button on the pad", CLI `next`), wave direction hidden in the GUI.
+Then: two columns from 1040 px content width (no scrolling on 16:9), effects ordered like the button (static, wave,
+breathe, neon, off), rainbow computed on sRGB values and dark saturated colours lifted for drawing (blue looked
+black on screen). Tom does not want seconds shown in the GUI.
+
+Release v0.1.0: `rust` merged into `main` (fast-forward), tag `v0.1.0` (2026-10-18).
 
 ## Guidelines
 
