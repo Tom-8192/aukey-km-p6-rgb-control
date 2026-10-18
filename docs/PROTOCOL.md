@@ -132,6 +132,36 @@ keyboard interface or anywhere else **[pad]** (2026-10-18). G-aim only labels th
 in a picture ("Lighting switch", `lightControlLang[42]`) **[code]**. So after a press the stored setting of the tool
 no longer matches the pad; sending again restores it.
 
+Where a press goes, tried from settings sent by the tool **[pad]** (2026-10-18):
+
+| Before | After one press |
+|---|---|
+| static slot n (dimmed: slot 3, brightness level 3) | static slot n+1 at **full brightness** (slot 4 yellow) |
+| static slot 7 | wave |
+| static + cycle (`70`) | wave |
+| off (`08 00 00 …`, i.e. static slot 1 with brightness 0) | static slot 2 (green) |
+| wave | breathe, one colour per breath (cycle) |
+| breathe | neon |
+| neon | static slot 1 |
+
+Wave, breathe and neon reached with the button run at a fixed middle speed - wave about 1-2 s, breathe about 2.4 s,
+neon about 5-8 s per round, i.e. speed level 2 - even right after the tool had sent breathe with speed 0. The tool
+models this in `Settings::after_button` (GUI "Pressed the button on the pad", CLI `next`).
+
+## Timing
+
+Measured on the pad by watching and counting (brightness level 9, 2026-10-18) **[pad]**:
+
+| Effect | level 0 | level 2 | level 4 |
+|---|---|---|---|
+| breathe, seconds per breath | 7.9 (7 in 55 s) | 2.4 (16 in 38 s) | 1.7 (15 in 26 s) |
+| neon, seconds per rainbow round | 24 | - | 4 |
+| wave, seconds per round (edge) | 8 | - | 1 |
+
+Static + cycle steps to the next colour about every 0.25 s, with speed byte `00` (as G-aim sends it) as well as `05` -
+the speed has no effect on static. Breathe + cycle takes the next colour with every breath. The levels in between are
+interpolated with `period = k / (device value + c)` fitted to the measured points; the GUI preview uses these values.
+
 ## Memory
 
 The pad keeps the last setting when it loses power - including "off": switched off and unplugged, it stays dark after
@@ -141,6 +171,5 @@ a press on the button.
 
 ## Open
 
-- How fast the cycle (`70`) steps, and whether speed affects it **[guess]**
 - Which colours the button's seven static steps use (the slot colours?) **[guess]**
 - What the wave direction changes (with two zones no difference is visible) **[guess]**

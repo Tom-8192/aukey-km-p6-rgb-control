@@ -24,8 +24,9 @@ Good to know:
   something has to switch it on again after the start (`kmp6_rgbtool on`, the logon task below, or OpenRGB etc.).
 * It has two light zones, the edge and the logo on the connector box; neither can be set separately.
 * The **button** on the connector box steps through the effects on the pad itself (seven static colours, wave,
-  breathe, neon). The PC does not learn about it, so the tool keeps showing its own last setting; "Send again" in the
-  GUI or `kmp6_rgbtool on` brings that back. A press also switches the pad on again after "off".
+  breathe, neon). The PC does not learn about it, so the tool keeps showing its own last setting. After a press, click
+  "Pressed the button on the pad" in the GUI (or run `kmp6_rgbtool next`): the tool takes the same step and the two
+  agree again. A press also switches the pad on again after "off".
 
 **Languages:** English and German (`--lang en|de`, otherwise `KMP6_LANG` or the system language; the GUI has a
 switch). Names are understood in both languages, e.g. `--mode breathe` or `--mode atmen`, `2=blue` or `2=blau`. A new
@@ -63,7 +64,7 @@ kmp6_rgbtool_gui --lang de  # start in German
 ```
 
 Pick an effect, move the sliders, click a colour slot - every change goes to the pad right away and is stored. The
-drawing shows roughly what the pad does.
+drawing of the pad runs at the speeds measured on the real one. The wave direction is not offered in the GUI (left and right look the same on the pad).
 
 ## Command line
 
@@ -78,6 +79,7 @@ kmp6_rgbtool color 2 blue                       # name, #RRGGBB or R,G,B
 kmp6_rgbtool off                                # LEDs off, the stored setting stays
 kmp6_rgbtool on                                 # send the stored setting again
 kmp6_rgbtool reset                              # factory setting of G-aim
+kmp6_rgbtool next                               # one step like the button on the pad
 kmp6_rgbtool set --mode neon --dry-run          # only print the reports
 ```
 

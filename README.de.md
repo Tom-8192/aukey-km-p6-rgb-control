@@ -26,8 +26,9 @@ Gut zu wissen:
   oder OpenRGB o. Ä.).
 * Es hat zwei Leuchtzonen, den Rand und das Logo an der Steckerbox; einzeln einstellen lassen sie sich nicht.
 * Der **Knopf** an der Steckerbox schaltet direkt am Pad durch die Effekte (sieben statische Farben, Welle, Atmen,
-  Neon). Der PC erfährt davon nichts, das Tool zeigt also weiter seine letzte Einstellung; „Erneut senden“ in der
-  Oberfläche oder `kmp6_rgbtool on` stellt sie wieder her. Nach „Aus“ schaltet ein Druck das Pad auch wieder ein.
+  Neon). Der PC erfährt davon nichts, das Tool zeigt also weiter seine letzte Einstellung. Nach einem Druck in der
+  Oberfläche „Knopf am Pad gedrückt“ klicken (oder `kmp6_rgbtool next`): Das Tool macht denselben Schritt, dann
+  stimmen beide wieder überein. Nach „Aus“ schaltet ein Druck das Pad auch wieder ein.
 
 **Sprachen:** Englisch und Deutsch (`--lang en|de`, sonst `KMP6_LANG` oder die Systemsprache; die Oberfläche hat einen
 Umschalter). Namen werden in beiden Sprachen verstanden, z. B. `--mode atmen` oder `--mode breathe`, `2=blau` oder
@@ -65,7 +66,8 @@ kmp6_rgbtool_gui --lang de  # auf Deutsch starten
 ```
 
 Effekt wählen, Regler schieben, Farbplatz anklicken – jede Änderung geht sofort ans Pad und wird gespeichert. Die
-Zeichnung zeigt ungefähr, was das Pad macht.
+Zeichnung des Pads läuft mit den am echten Pad gemessenen Geschwindigkeiten. Die Richtung der Welle bietet die Oberfläche nicht an (links und rechts sehen am Pad gleich
+aus).
 
 ## Kommandozeile
 
@@ -80,6 +82,7 @@ kmp6_rgbtool color 2 blau                       # Name, #RRGGBB oder R,G,B
 kmp6_rgbtool off                                # LEDs aus, gespeicherte Einstellung bleibt
 kmp6_rgbtool on                                 # gespeicherte Einstellung erneut senden
 kmp6_rgbtool reset                              # Werkseinstellung von G-aim
+kmp6_rgbtool next                               # einen Schritt weiter wie der Knopf am Pad
 kmp6_rgbtool set --mode neon --dry-run          # Pakete nur anzeigen
 ```
 

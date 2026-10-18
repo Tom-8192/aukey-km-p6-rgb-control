@@ -25,6 +25,8 @@ pub const BRIGHTNESS_CODES: [u8; 10] = [0, 3, 7, 10, 14, 17, 21, 24, 28, 32];
 pub const SPEED_CODES: [u8; 5] = [0, 1, 3, 4, 5];
 pub const MAX_BRIGHTNESS: u8 = BRIGHTNESS_CODES.len() as u8 - 1;
 pub const MAX_SPEED: u8 = SPEED_CODES.len() as u8 - 1;
+/// speed level the button on the pad uses for wave, breathe and neon, whatever was sent before (docs/PROTOCOL.md "Button")
+pub const BUTTON_SPEED: u8 = 2;
 /// factory colours of G-aim (`setting/pD.bin`): red, green, blue, yellow, cyan, magenta, white
 pub const FACTORY_COLORS: [Rgb; SLOTS] =
     [[255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 0], [0, 255, 255], [255, 0, 255], [255, 255, 255]];
@@ -172,6 +174,30 @@ impl Settings {
     pub fn shown_color(&self) -> Rgb {
         if self.cycle { self.colors[0] } else { self.colors[usize::from(self.slot)] }
     }
+
+    /// What the pad shows after one press of its button, starting from this setting (docs/PROTOCOL.md "Button"):
+    /// static slot n -> slot n+1, after slot 7 or "cycle" the wave, then breathe through all colours, neon and
+    /// static slot 1 again. "Off" is static slot 1 with brightness 0 for the pad, so it goes on with slot 2.
+    /// The button always sets full brightness and its own speed; colours and direction stay.
+    pub fn after_button(&self) -> Settings {
+        let next = |mode, slot, cycle| Settings {
+            mode,
+            slot,
+            cycle,
+            brightness: MAX_BRIGHTNESS,
+            speed: if mode == Mode::Static { self.speed } else { BUTTON_SPEED },
+            ..self.clone()
+        };
+        let last = SLOTS as u8 - 1;
+        match self.mode {
+            Mode::Off => next(Mode::Static, 1, false),
+            Mode::Static if self.cycle || self.slot >= last => next(Mode::Wave, self.slot, self.cycle),
+            Mode::Static => next(Mode::Static, self.slot + 1, false),
+            Mode::Wave => next(Mode::Breathe, self.slot, true),
+            Mode::Breathe => next(Mode::Neon, self.slot, self.cycle),
+            Mode::Neon => next(Mode::Static, 0, false),
+        }
+    }
 }
 
 /// Colours as "#RRGGBB" in the settings file, so it stays readable.
@@ -241,6 +267,31 @@ mod tests {
         // G-aim "off": static with brightness 0, speed and direction passed through
         let off = Settings { mode: Mode::Off, ..base };
         assert_eq!(lines(&off), ["08 00 00 05 01 00 00 00"]);
+    }
+
+    /// The sequence Tom watched on the pad (2026-10-18).
+    #[test]
+    fn button_sequence() {
+        let dim_blue = Settings { brightness: 3, cycle: false, slot: 2, ..Settings::default() };
+        let s = dim_blue.after_button();
+        assert_eq!((s.mode, s.slot, s.cycle, s.brightness), (Mode::Static, 3, false, MAX_BRIGHTNESS));
+        let mut s = s;
+        for _ in 0..3 {
+            s = s.after_button();
+        }
+        assert_eq!((s.mode, s.slot), (Mode::Static, 6));
+        let wave = s.after_button();
+        assert_eq!((wave.mode, wave.speed), (Mode::Wave, BUTTON_SPEED));
+        let breathe = wave.after_button();
+        assert_eq!((breathe.mode, breathe.cycle, breathe.speed), (Mode::Breathe, true, BUTTON_SPEED));
+        let neon = breathe.after_button();
+        assert_eq!((neon.mode, neon.speed), (Mode::Neon, BUTTON_SPEED));
+        let first = neon.after_button();
+        assert_eq!((first.mode, first.slot, first.cycle), (Mode::Static, 0, false));
+        // static cycling counts as the last static step; off goes on with slot 2
+        assert_eq!(Settings::default().after_button().mode, Mode::Wave);
+        let off = Settings { mode: Mode::Off, brightness: 0, ..Settings::default() }.after_button();
+        assert_eq!((off.mode, off.slot, off.brightness), (Mode::Static, 1, MAX_BRIGHTNESS));
     }
 
     #[test]

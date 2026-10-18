@@ -7,9 +7,9 @@ use std::time::{Duration, Instant};
 
 use eframe::egui::{self, Color32, RichText, ThemePreference, Ui};
 use egui_phosphor::regular as icon;
-use kmp6_core::names::{self, COLORS, direction_name, format_hex, mode_name};
+use kmp6_core::names::{self, COLORS, format_hex, mode_name};
 use kmp6_core::protocol::{MAX_BRIGHTNESS, MAX_SPEED};
-use kmp6_core::{Direction, Mode, Settings, config, i18n, tr};
+use kmp6_core::{Mode, Settings, config, i18n, tr};
 
 use crate::theme::{self, ACCENT};
 use crate::widgets;
@@ -148,7 +148,16 @@ impl App {
             widgets::card_title(ui, icon::LIGHTBULB, &tr!("gui.effect"), Some(&tr!("gui.effect_hint")));
             ui.add_space(4.0);
             self.ui_modes(ui);
-            ui.add_space(10.0);
+            ui.add_space(4.0);
+            // the button on the pad changes the effect without telling the PC: follow it by hand
+            let button = widgets::icon_button(ui, icon::HAND_POINTING, &tr!("gui.pad_button"))
+                .on_hover_text(tr!("gui.pad_button_hint"));
+            if button.clicked() {
+                self.settings = self.settings.after_button();
+                self.sync_hex();
+                self.send_now();
+            }
+            ui.add_space(6.0);
             crate::preview::show(ui, &self.settings, self.time());
         });
         ui.add_space(6.0);
@@ -219,15 +228,8 @@ impl App {
                 widgets::muted(ui, text);
                 ui.end_row();
             }
-            ui.label(tr!("gui.direction"));
-            ui.add_enabled_ui(mode.uses_direction(), |ui| {
-                let options = [Direction::Left, Direction::Right].map(|d| (d, direction_name(d)));
-                changed |= widgets::segmented(ui, &mut self.settings.direction, &options);
-            });
-            if !mode.uses_direction() {
-                widgets::muted(ui, tr!("gui.not_used"));
-            }
-            ui.end_row();
+            // The wave direction is still sent like G-aim does, but left and right look the same on the pad
+            // (two zones only), so it is not offered here; the command line keeps --direction.
             if changed {
                 self.changed();
             }
@@ -300,7 +302,10 @@ impl App {
             }
         });
         ui.add_space(4.0);
-        changed |= ui.checkbox(&mut self.settings.cycle, tr!("gui.cycle")).changed();
+        let cycle_used = self.settings.mode.uses_colors();
+        ui.add_enabled_ui(cycle_used, |ui| {
+            changed |= ui.checkbox(&mut self.settings.cycle, tr!("gui.cycle")).changed();
+        });
         if changed {
             self.changed();
         }

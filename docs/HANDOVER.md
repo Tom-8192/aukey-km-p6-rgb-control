@@ -41,9 +41,15 @@ report is retried up to 4 times.
 `install_shutdown.ps1` ran on Tom's PC (2026-10-18): `scripts.ini` has `kmp6_rgbtool.exe off`, the old
 `mauspad_off.ps1` entry is gone from `psscripts.ini`, `gpt.ini` version 3 → 4.
 
-Not yet: Linux on the pad, a real shutdown with the new entry. The GUI was checked by hand on the pad only for one case: after the button on the pad changed the
+A real shutdown with the new entry switched the LEDs off (Tom, 2026-10-18).
+
+Not yet: Linux on the pad. The GUI was checked by hand on the pad only for one case: after the button on the pad changed the
 effect, a click on the already selected effect tile sets it again (every click sends, see `app.rs`); the rest of the
 GUI only with `--fake` via `dev-screenshot` pictures.
+
+GUI after Tom's wish "show the behaviour of the pad better" (2026-10-18): drawing after his product photo
+(`preview.rs`, shapes only), speeds measured on the pad (PROTOCOL.md "Timing"), the button modelled
+(`Settings::after_button`, GUI button "Pressed the button on the pad", CLI `next`), wave direction hidden in the GUI.
 
 ## Guidelines
 
@@ -65,7 +71,6 @@ The window saves itself as BMP after 30 frames and closes; the settings file dec
 ## Open
 
 1. Test on Linux (hidraw path, udev rule, systemd unit).
-2. Shut down once and check that the LEDs go off (`install_shutdown.ps1` is installed).
 3. OpenRGB: Tom switches the pad on at startup with OpenRGB - check whether OpenRGB supports the KM-P6 and how it
    relates to this tool.
-4. Unknown: how fast the cycle steps, what the wave direction does, the colours of the button's static steps.
+4. Unknown: what the wave direction does; the levels 1 and 3 of neon/wave are interpolated, not measured.

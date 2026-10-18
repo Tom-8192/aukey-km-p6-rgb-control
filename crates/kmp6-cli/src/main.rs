@@ -82,6 +82,10 @@ enum Cmd {
         #[command(flatten)]
         send: Send,
     },
+    Next {
+        #[command(flatten)]
+        send: Send,
+    },
 }
 
 fn parse_lang(text: &str) -> std::result::Result<String, String> {
@@ -218,6 +222,12 @@ fn run(cli: &Cli) -> Result<()> {
             send_settings(device, &off, Send { dry_run: *dry_run, no_save: true })
         }
         Cmd::Reset { send } => send_settings(device, &Settings::default(), *send),
+        Cmd::Next { send } => {
+            let s = config::load()?.after_button();
+            send_settings(device, &s, *send)?;
+            print_settings(&s);
+            Ok(())
+        }
     }
 }
 
