@@ -208,10 +208,11 @@ impl App {
 
     fn ui_modes(&mut self, ui: &mut Ui) {
         let tiles = [
+            // same order as the button on the pad
             (Mode::Static, icon::SUN),
+            (Mode::Wave, icon::WAVES),
             (Mode::Breathe, icon::WIND),
             (Mode::Neon, icon::LIGHTNING),
-            (Mode::Wave, icon::WAVES),
             (Mode::Off, icon::POWER),
         ];
         let gap = ui.spacing().item_spacing.x;

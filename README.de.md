@@ -11,7 +11,7 @@ und ohne Laufzeitumgebung:
 
 Inoffiziell, nicht mit Aukey oder G-aim verbunden.
 
-**Stand 0.1:** Alle Beleuchtungsfunktionen von G-aim: die Effekte Statisch, Atmen, Neon, Welle und Aus, Helligkeit
+**Stand 0.1:** Alle Beleuchtungsfunktionen von G-aim: die Effekte Statisch, Welle, Atmen, Neon und Aus, Helligkeit
 (10 Stufen), Tempo (5 Stufen), Richtung der Welle, sieben Farbplätze und „alle Farben im Wechsel“. Die Pakete
 entsprechen genau G-aim Control Center 1.1.5 (aus dem Programm ermittelt, siehe [`docs/PROTOCOL.md`](docs/PROTOCOL.md))
 und wurden unter Windows am Pad geprüft. Unter Linux baut das Tool und besteht alle Tests, am Pad ausprobiert ist es

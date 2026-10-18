@@ -11,7 +11,7 @@ no runtime:
 
 Unofficial, not affiliated with Aukey or G-aim.
 
-**Status 0.1:** All lighting functions of G-aim: the effects static, breathe, neon, wave and off, brightness (10
+**Status 0.1:** All lighting functions of G-aim: the effects static, wave, breathe, neon and off, brightness (10
 levels), speed (5 levels), wave direction, seven colour slots and "cycle through all colours". The reports follow
 G-aim Control Center 1.1.5 exactly (worked out from the program, see [`docs/PROTOCOL.md`](docs/PROTOCOL.md)) and were
 checked on the pad under Windows. Linux builds and passes all tests but has not been tried with the pad yet.

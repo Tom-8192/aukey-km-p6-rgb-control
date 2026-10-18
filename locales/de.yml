@@ -55,7 +55,7 @@ cli.cmd.off: "LEDs ausschalten, gespeicherte Einstellung bleibt (fürs Herunterf
 cli.cmd.reset: "Werkseinstellung von G-aim: statisch, alle sieben Farben im Wechsel"
 cli.cmd.next: "einen Schritt weiter wie der Knopf am Pad (statische Farben, Welle, Atmen, Neon)"
 cli.cmd.help: "diese Hilfe oder die eines Unterbefehls anzeigen"
-cli.arg.set.mode: "Effekt: statisch, atmen, neon, welle, aus"
+cli.arg.set.mode: "Effekt: statisch, welle, atmen, neon, aus"
 cli.arg.set.brightness: "Helligkeit 0–9"
 cli.arg.set.speed: "Geschwindigkeit 0–4 (Atmen, Neon, Welle)"
 cli.arg.set.direction: "Richtung der Welle: links, rechts"

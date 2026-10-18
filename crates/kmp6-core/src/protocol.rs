@@ -43,7 +43,8 @@ pub enum Mode {
 }
 
 impl Mode {
-    pub const ALL: [Mode; 5] = [Mode::Static, Mode::Breathe, Mode::Neon, Mode::Wave, Mode::Off];
+    /// in the order the button on the pad steps through them, then off
+    pub const ALL: [Mode; 5] = [Mode::Static, Mode::Wave, Mode::Breathe, Mode::Neon, Mode::Off];
 
     /// key under `mode.*` in the language files
     pub fn id(self) -> &'static str {
