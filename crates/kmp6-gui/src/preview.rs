@@ -2,7 +2,7 @@
 //! and a soft glow, the connector box on the top edge at the left with the lit logo and the cable going up.
 //! Shapes only, no images. The animation uses the times measured on the pad (docs/PROTOCOL.md "Timing").
 
-use eframe::egui::{self, Color32, CornerRadius, Pos2, Rect, Sense, Shape, Stroke, StrokeKind, Ui, ecolor::Hsva};
+use eframe::egui::{self, Color32, CornerRadius, Pos2, Rect, Sense, Shape, Stroke, StrokeKind, Ui, ecolor};
 use kmp6_core::protocol::BRIGHTNESS_CODES;
 use kmp6_core::{Direction, Mode, Settings};
 
@@ -105,7 +105,7 @@ pub fn show(ui: &mut Ui, s: &Settings, time: f64) {
 /// Colour of a zone at time `t` (seconds); `None` = dark. Both zones share the colour, except the wave where
 /// they run out of step.
 fn color_at(s: &Settings, zone: Zone, t: f64) -> Option<Color32> {
-    let rgb = |c: [u8; 3]| Color32::from_rgb(c[0], c[1], c[2]);
+    let rgb = |c: [u8; 3]| led(Color32::from_rgb(c[0], c[1], c[2]));
     let slot = |step: f64| {
         if s.cycle { s.colors[(step as usize) % s.colors.len()] } else { s.colors[usize::from(s.slot)] }
     };
@@ -127,8 +127,26 @@ fn color_at(s: &Settings, zone: Zone, t: f64) -> Option<Color32> {
     }
 }
 
+/// Fully saturated colour at hue `h` (0-1). HSV straight on sRGB values: egui's `Hsva` works in linear light,
+/// and after the conversion to sRGB the rainbow jumps (blue to red looked abrupt).
 fn hue(h: f64) -> Color32 {
-    Hsva::new(h.rem_euclid(1.0) as f32, 1.0, 1.0, 1.0).into()
+    let [r, g, b] = ecolor::rgb_from_hsv((h.rem_euclid(1.0) as f32, 1.0, 1.0)).map(|v| (v * 255.0).round() as u8);
+    led(Color32::from_rgb(r, g, b))
+}
+
+/// A lit LED looks bright in any colour, a screen pixel of pure blue (or violet) looks almost black on the dark
+/// window - in neon and wave the preview seemed to go dark for a moment. Dark but saturated colours are therefore
+/// lifted towards white for drawing; brightness and breathing still dim them afterwards.
+fn led(c: Color32) -> Color32 {
+    const MIN_LUMA: f32 = 0.25;
+    let [r, g, b] = [c.r(), c.g(), c.b()].map(|v| f32::from(v) / 255.0);
+    let luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    if luma >= MIN_LUMA || r.max(g).max(b) == 0.0 {
+        return c;
+    }
+    let k = (MIN_LUMA - luma) / MIN_LUMA * 0.45;
+    let lift = |v: u8| (f32::from(v) + (255.0 - f32::from(v)) * k).round() as u8;
+    Color32::from_rgb(lift(c.r()), lift(c.g()), lift(c.b()))
 }
 
 fn scale(c: Color32, k: f32) -> Color32 {
@@ -145,7 +163,7 @@ mod tests {
         let off = Settings { mode: Mode::Off, ..Settings::default() };
         assert!(color_at(&off, Zone::Edge, 1.0).is_none());
         let s = Settings { cycle: false, slot: 2, ..Settings::default() };
-        assert_eq!(color_at(&s, Zone::Logo, 5.0), Some(Color32::from_rgb(0, 0, 255)));
+        assert_eq!(color_at(&s, Zone::Logo, 5.0), Some(led(Color32::from_rgb(0, 0, 255))));
     }
 
     #[test]
@@ -156,6 +174,25 @@ mod tests {
         }
         let wave = Settings { mode: Mode::Wave, ..Settings::default() };
         assert_ne!(color_at(&wave, Zone::Edge, 2.3), color_at(&wave, Zone::Logo, 2.3));
+    }
+
+    /// No moment in neon or wave may look dark on screen (pure blue did).
+    #[test]
+    fn rainbow_never_looks_dark() {
+        for mode in [Mode::Neon, Mode::Wave] {
+            let s = Settings { mode, speed: 2, ..Settings::default() };
+            for i in 0..2400 {
+                for zone in [Zone::Edge, Zone::Logo] {
+                    let c = color_at(&s, zone, f64::from(i) * 0.01).unwrap();
+                    let luma = 0.2126 * f32::from(c.r()) + 0.7152 * f32::from(c.g()) + 0.0722 * f32::from(c.b());
+                    assert!(luma > 0.2 * 255.0, "{mode:?} {zone:?} t={i} {c:?}");
+                }
+            }
+        }
+        // a lit pure blue stays blue, black stays black
+        let blue = led(Color32::from_rgb(0, 0, 255));
+        assert!(blue.b() == 255 && blue.r() == blue.g() && blue.r() < 128);
+        assert_eq!(led(Color32::BLACK), Color32::BLACK);
     }
 
     #[test]
@@ -170,7 +207,7 @@ mod tests {
     #[test]
     fn static_cycle_steps_four_times_a_second() {
         let s = Settings::default();
-        assert_eq!(color_at(&s, Zone::Edge, 0.1), Some(Color32::from_rgb(255, 0, 0)));
-        assert_eq!(color_at(&s, Zone::Edge, 0.3), Some(Color32::from_rgb(0, 255, 0)));
+        assert_eq!(color_at(&s, Zone::Edge, 0.1), Some(led(Color32::from_rgb(255, 0, 0))));
+        assert_eq!(color_at(&s, Zone::Edge, 0.3), Some(led(Color32::from_rgb(0, 255, 0))));
     }
 }
