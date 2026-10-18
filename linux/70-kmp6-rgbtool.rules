@@ -1,0 +1,3 @@
+# KM-P6 RGB Tool (Aukey KM-P6 RGB mouse pad): access to /dev/hidraw* for the logged-in user
+# Install: sudo cp 70-kmp6-rgbtool.rules /etc/udev/rules.d/ && sudo udevadm control --reload && sudo udevadm trigger
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a1fa", MODE="0660", TAG+="uaccess"

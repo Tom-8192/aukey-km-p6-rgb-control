@@ -1,0 +1,17 @@
+[package]
+name = "kmp6-cli"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description.workspace = true
+repository.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "kmp6_rgbtool"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.6.7", features = ["derive", "string"] }
+kmp6-core = { path = "../kmp6-core" }
+serde_json = "1.0.154"

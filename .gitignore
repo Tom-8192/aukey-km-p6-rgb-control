@@ -1,0 +1,7 @@
+/target/
+# Python prototype
+__pycache__/
+# Never publish: vendor software and its extracted files, USB captures
+original_software/
+captures/
+*.pcapng

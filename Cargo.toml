@@ -1,0 +1,16 @@
+[workspace]
+resolver = "3"
+members = ["crates/kmp6-core", "crates/kmp6-cli", "crates/kmp6-gui"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["Tom"]
+description = "KM-P6 RGB Tool: unofficial lighting tool for the Aukey KM-P6 RGB mouse pad (Windows and Linux)"
+repository = "https://github.com/Tom-8192/aukey-km-p6-rgb-control"
+license = "GPL-2.0-or-later"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

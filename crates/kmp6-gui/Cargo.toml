@@ -1,0 +1,21 @@
+[package]
+name = "kmp6-gui"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+description.workspace = true
+repository.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "kmp6_rgbtool_gui"
+path = "src/main.rs"
+
+[features]
+# KMP6_SHOT=out.bmp saves the window and closes it (layout checks during development)
+dev-screenshot = []
+
+[dependencies]
+eframe = { version = "0.36.2", features = ["persistence"] }
+egui-phosphor = "0.14.0"
+kmp6-core = { path = "../kmp6-core", features = ["fake"] }

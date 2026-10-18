@@ -1,0 +1,15 @@
+# KM-P6 RGB Tool: switch the mouse pad LEDs off when the system shuts down.
+# Install: sudo cp kmp6_rgbtool /usr/local/bin/ && sudo cp kmp6-off.service /etc/systemd/system/
+#          sudo systemctl daemon-reload && sudo systemctl enable --now kmp6-off.service
+[Unit]
+Description=KM-P6 RGB Tool: mouse pad LEDs off at shutdown
+After=systemd-udevd.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=/usr/local/bin/kmp6_rgbtool off
+
+[Install]
+WantedBy=multi-user.target

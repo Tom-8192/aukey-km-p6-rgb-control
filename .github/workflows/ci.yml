@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]   # tags are built by the release workflow
+  pull_request:
+
+# a new push cancels the still running run of the same branch
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rust:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Linux packages for the GUI
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libwayland-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace
+      - run: cargo build --release --workspace
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kmp6-rgbtool-${{ runner.os }}
+          if-no-files-found: ignore
+          path: |
+            target/release/kmp6_rgbtool
+            target/release/kmp6_rgbtool_gui
+            target/release/kmp6_rgbtool.exe
+            target/release/kmp6_rgbtool_gui.exe
