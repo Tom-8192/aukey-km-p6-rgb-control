@@ -38,8 +38,10 @@ left and right look the same. The button on the connector box steps static ×7 �
 the pad itself; it sends nothing over USB (USBPcap capture, see PROTOCOL.md "Button"). Twice in a comparison run Windows refused a SET_FEATURE (`0x1F`); since then every
 report is retried up to 4 times.
 
-Not yet: Linux on the pad, `install_shutdown.ps1` on the real system (only its INI functions were tested on copies),
-a real shutdown. The GUI was checked by hand on the pad only for one case: after the button on the pad changed the
+`install_shutdown.ps1` ran on Tom's PC (2026-10-18): `scripts.ini` has `kmp6_rgbtool.exe off`, the old
+`mauspad_off.ps1` entry is gone from `psscripts.ini`, `gpt.ini` version 3 → 4.
+
+Not yet: Linux on the pad, a real shutdown with the new entry. The GUI was checked by hand on the pad only for one case: after the button on the pad changed the
 effect, a click on the already selected effect tile sets it again (every click sends, see `app.rs`); the rest of the
 GUI only with `--fake` via `dev-screenshot` pictures.
 
@@ -63,7 +65,7 @@ The window saves itself as BMP after 30 frames and closes; the settings file dec
 ## Open
 
 1. Test on Linux (hidraw path, udev rule, systemd unit).
-2. Run `install_shutdown.ps1` on Tom's PC (replaces the old `mauspad_off.ps1` entry) and shut down once.
+2. Shut down once and check that the LEDs go off (`install_shutdown.ps1` is installed).
 3. OpenRGB: Tom switches the pad on at startup with OpenRGB - check whether OpenRGB supports the KM-P6 and how it
    relates to this tool.
 4. Unknown: how fast the cycle steps, what the wave direction does, the colours of the button's static steps.
