@@ -136,3 +136,32 @@ pub fn nice(name: &str) -> String {
     let mut chars = name.chars();
     chars.next().map(|c| c.to_uppercase().chain(chars).collect()).unwrap_or_default()
 }
+
+/// Left column of fixed width next to a right column that takes the rest; stacked when the window is narrow.
+pub fn two_columns<T>(
+    ui: &mut Ui,
+    state: &mut T,
+    left_width: f32,
+    left: impl FnOnce(&mut Ui, &mut T),
+    right: impl FnOnce(&mut Ui, &mut T),
+) {
+    if ui.available_width() < left_width + 320.0 {
+        left(ui, state);
+        ui.add_space(4.0);
+        right(ui, state);
+        return;
+    }
+    // separate child areas instead of a horizontal layout, which would limit the height of both columns
+    let gap = ui.spacing().item_spacing.x;
+    let area = ui.available_rect_before_wrap();
+    let height = area.height().max(400.0);
+    let layout = egui::Layout::top_down(egui::Align::Min);
+    let left_rect = egui::Rect::from_min_size(area.min, egui::vec2(left_width, height));
+    let mut left_ui = ui.new_child(egui::UiBuilder::new().max_rect(left_rect).layout(layout));
+    left(&mut left_ui, state);
+    let right_min = egui::pos2(area.min.x + left_width + gap, area.min.y);
+    let right_rect = egui::Rect::from_min_size(right_min, egui::vec2(area.max.x - right_min.x, height));
+    let mut right_ui = ui.new_child(egui::UiBuilder::new().max_rect(right_rect).layout(layout));
+    right(&mut right_ui, state);
+    ui.advance_cursor_after_rect(left_ui.min_rect().union(right_ui.min_rect()));
+}

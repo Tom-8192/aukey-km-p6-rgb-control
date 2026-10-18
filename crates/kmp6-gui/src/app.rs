@@ -22,6 +22,8 @@ const SETTLE: Duration = Duration::from_millis(120);
 /// while a slider is dragged, still send at least this often
 const MAX_DELAY: Duration = Duration::from_millis(400);
 const LOG_LINES: usize = 200;
+/// from this content width on, the page uses two columns
+const WIDE: f32 = 1040.0;
 
 pub struct App {
     dev: Device,
@@ -142,8 +144,22 @@ impl App {
 
     // ---------------------------------------------------------------- page
 
+    /// Wide window (landscape): effect and drawing on the left, levels and colours on the right; otherwise stacked.
     pub fn ui_page(&mut self, ui: &mut Ui) {
-        let mode = self.settings.mode;
+        let wide = ui.available_width() >= WIDE;
+        let left_width = if wide { ((ui.available_width() - 12.0) * 0.56).floor() } else { ui.available_width() };
+        widgets::two_columns(
+            ui,
+            self,
+            left_width,
+            |ui, app| app.ui_effect(ui),
+            |ui, app| {
+                app.ui_settings_cards(ui);
+            },
+        );
+    }
+
+    fn ui_effect(&mut self, ui: &mut Ui) {
         widgets::card(ui, |ui| {
             widgets::card_title(ui, icon::LIGHTBULB, &tr!("gui.effect"), Some(&tr!("gui.effect_hint")));
             ui.add_space(4.0);
@@ -160,7 +176,10 @@ impl App {
             ui.add_space(6.0);
             crate::preview::show(ui, &self.settings, self.time());
         });
-        ui.add_space(6.0);
+    }
+
+    fn ui_settings_cards(&mut self, ui: &mut Ui) {
+        let mode = self.settings.mode;
         widgets::card(ui, |ui| {
             widgets::card_title(ui, icon::SLIDERS_HORIZONTAL, &tr!("gui.adjust"), None);
             self.ui_levels(ui, mode);

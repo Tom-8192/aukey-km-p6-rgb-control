@@ -58,7 +58,6 @@ impl eframe::App for App {
         let central = egui::Frame::new().fill(ui.visuals().panel_fill).inner_margin(egui::Margin::symmetric(20, 16));
         egui::CentralPanel::no_frame().frame(central).show(ui, |ui| {
             egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
-                ui.set_max_width(ui.available_width().min(760.0));
                 self.ui_page(ui);
             });
         });
@@ -84,7 +83,7 @@ fn main() -> eframe::Result {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_title("KM-P6 RGB Tool")
-            .with_inner_size([720.0, 860.0])
+            .with_inner_size([1200.0, 780.0])
             .with_min_inner_size([520.0, 560.0]),
         ..Default::default()
     };

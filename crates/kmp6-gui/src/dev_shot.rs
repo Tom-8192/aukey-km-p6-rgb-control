@@ -12,7 +12,8 @@ pub fn frame(ctx: &egui::Context) {
     if ctx.cumulative_frame_nr() == 1
         && let Some(h) = std::env::var("KMP6_SHOT_HEIGHT").ok().and_then(|h| h.parse::<f32>().ok())
     {
-        ctx.send_viewport_cmd(ViewportCommand::InnerSize(egui::vec2(720.0, h)));
+        let w = std::env::var("KMP6_SHOT_WIDTH").ok().and_then(|w| w.parse::<f32>().ok()).unwrap_or(720.0);
+        ctx.send_viewport_cmd(ViewportCommand::InnerSize(egui::vec2(w, h)));
     }
     if ctx.cumulative_frame_nr() == FRAMES {
         ctx.send_viewport_cmd(ViewportCommand::Screenshot(UserData::default()));

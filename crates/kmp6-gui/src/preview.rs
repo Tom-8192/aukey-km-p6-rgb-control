@@ -8,7 +8,7 @@ use kmp6_core::{Direction, Mode, Settings};
 
 /// width : height of the mat
 const ASPECT: f32 = 2.63;
-const MAX_PAD_HEIGHT: f32 = 230.0;
+const MAX_PAD_HEIGHT: f32 = 380.0;
 /// seconds per breath, per speed level 0-4; levels 0, 2, 4 measured, 1 and 3 from the fitted curve
 const BREATHE: [f64; 5] = [7.9, 4.6, 2.4, 2.05, 1.73];
 /// seconds per round through the rainbow; levels 0 and 4 measured
