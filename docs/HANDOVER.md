@@ -1,4 +1,4 @@
-# Handover / project status – KM-P6 RGB Tool (as of 2026-11-08, version 0.1.1)
+# Handover / project status – KM-P6 RGB Tool (as of 2026-11-08, version 0.1.2)
 
 Everything a new session needs to continue. Protocol details: `docs/PROTOCOL.md`, usage: `README.md`.
 
