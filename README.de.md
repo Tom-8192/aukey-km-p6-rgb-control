@@ -14,8 +14,9 @@ Inoffiziell, nicht mit Aukey oder G-aim verbunden.
 **Stand 0.1:** Alle Beleuchtungsfunktionen von G-aim: die Effekte Statisch, Welle, Atmen, Neon und Aus, Helligkeit
 (10 Stufen), Tempo (5 Stufen), Richtung der Welle, sieben Farbplätze und „alle Farben im Wechsel“. Die Pakete
 entsprechen genau G-aim Control Center 1.1.5 (aus dem Programm ermittelt, siehe [`docs/PROTOCOL.md`](docs/PROTOCOL.md))
-und wurden unter Windows am Pad geprüft. Unter Linux baut das Tool und besteht alle Tests, am Pad ausprobiert ist es
-dort noch nicht.
+und wurden unter Windows am Pad geprüft. Unter Linux ist die Kommandozeile ebenfalls am Pad geprüft (seit 0.1.1), die
+Oberfläche dort noch nicht. Für OpenRGB unter Linux gibt es das
+[OpenRGB-KM-P6-Plugin](https://github.com/Tom-8192/OpenRGB-KMP6-Plugin).
 
 Gut zu wissen:
 
@@ -51,7 +52,9 @@ Die Programme liegen dann in `target\release\`.
 
 Linux (Debian/Ubuntu): Rust per rustup, für die Oberfläche zusätzlich
 `sudo apt install libxkbcommon-dev libwayland-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev`.
-Zugriff auf das Pad (`/dev/hidraw*`, ohne hidapi; der Kerneltreiber bleibt aktiv):
+Zugriff auf das Pad: Der Kernel legt für das Licht-Interface kein `/dev/hidraw*` an (es hat keinen Endpoint), daher
+spricht das Tool es über usbfs an (`/dev/bus/usb/…`, ohne libusb; das Tastatur-Interface behält seinen Treiber). Die
+udev-Regel erlaubt beides:
 ```
 sudo cp linux/70-kmp6-rgbtool.rules /etc/udev/rules.d/
 sudo udevadm control --reload && sudo udevadm trigger

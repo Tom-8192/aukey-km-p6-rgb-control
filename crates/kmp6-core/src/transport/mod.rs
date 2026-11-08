@@ -5,7 +5,9 @@
 //! pad never answers (GET_FEATURE returns no data).
 //!
 //! * Windows: hidapi.
-//! * Linux: direct `/dev/hidraw*` ioctls - no dependency, the kernel driver stays attached.
+//! * Linux: the kernel creates no `/dev/hidraw*` for interface 2 (it has no endpoint, `usbhid` refuses it), so the
+//!   report goes as a control transfer through usbfs (`/dev/bus/usb/BBB/DDD`). A hidraw node is still used when a
+//!   kernel does create one. No dependency either way; the keyboard interface stays with its driver.
 //!
 //! Every command runs under a cross-process lock (`lock`/`unlock`) so that the GUI, the command line and the
 //! shutdown hook do not interleave their packets.
@@ -14,6 +16,8 @@ use crate::{Error, Result, hex, tr};
 
 #[cfg(target_os = "linux")]
 mod linux;
+#[cfg(target_os = "linux")]
+mod linux_usbfs;
 #[cfg(windows)]
 mod windows;
 
@@ -34,7 +38,7 @@ pub trait Transport {
         Ok(())
     }
     fn unlock(&mut self) {}
-    /// Device path (hidapi path or /dev/hidrawN), for display only.
+    /// Device path (hidapi path, /dev/hidrawN or /dev/bus/usb/BBB/DDD), for display only.
     fn path(&self) -> String {
         String::new()
     }
@@ -79,7 +83,14 @@ pub(crate) fn send_failed(data: &[u8; REPORT_LEN], e: impl std::fmt::Display) ->
 pub fn open_transport(path: Option<&str>) -> Result<Box<dyn Transport>> {
     #[cfg(target_os = "linux")]
     {
-        Ok(Box::new(linux::HidrawTransport::open(path)?))
+        match path {
+            Some(p) if p.starts_with("/dev/bus/usb/") => Ok(Box::new(linux_usbfs::UsbfsTransport::open(Some(p))?)),
+            Some(p) => Ok(Box::new(linux::HidrawTransport::open(Some(p))?)),
+            None => match linux::find_hidraw() {
+                Some(p) => Ok(Box::new(linux::HidrawTransport::open(Some(&p))?)),
+                None => Ok(Box::new(linux_usbfs::UsbfsTransport::open(None)?)),
+            },
+        }
     }
     #[cfg(windows)]
     {

@@ -162,6 +162,27 @@ Static + cycle steps to the next colour about every 0.25 s, with speed byte `00`
 the speed has no effect on static. Breathe + cycle takes the next colour with every breath. The levels in between are
 interpolated with `period = k / (device value + c)` fitted to the measured points; the GUI preview uses these values.
 
+## Linux
+
+Interface 2 has **no endpoint** (`bNumEndpoints=0`; the configuration descriptor also numbers it 2 although it is the
+second of two interfaces) **[pad]** (2026-11-08, Fedora/Bazzite kernel 7.2). Linux `usbhid` needs an interrupt IN
+endpoint and refuses the interface, so there is no `/dev/hidraw*` for it - only interface 0 (the keyboard) gets one:
+
+```
+usb 2-2.2: config 1 has an invalid interface number: 2 but max is 1
+usb 2-2.2: config 1 has no interface number 1
+hid-generic 0003:04D9:A1FA.0001: input,hidraw0: USB HID v1.10 Keyboard [HOLTEK USB Gaming Keyboard] on usb-0000:00:14.0-2.2/input0
+usbhid 2-2.2:1.2: couldn't find an input interrupt endpoint
+```
+
+Windows' HID class driver accepts the interface, which is why hidapi and OpenRGB find the pad there and OpenRGB's
+hidapi detector (interface 2, `FF00`) finds nothing on Linux.
+
+The report still works as a plain HID class request on endpoint 0 **[pad]** (2026-11-08: static red via libusb, static
+slot 3 (blue) with the tool, all effects with the OpenRGB plugin): SET_REPORT, `bmRequestType 21`, `bRequest 09`, `wValue 0300` (feature report, ID 0),
+`wIndex 0002`, the 8 data bytes without report ID. The tool sends it through usbfs (`USBDEVFS_CONTROL` on
+`/dev/bus/usb/BBB/DDD`); interface 2 has no kernel driver, so it can be claimed without detaching anything.
+
 ## OpenRGB
 
 OpenRGB (1.1) drives the pad as "Holtek Mousemat" (`Controllers/HoltekController/HoltekA1FAController`, detector on

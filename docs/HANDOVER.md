@@ -1,4 +1,4 @@
-# Handover / project status – KM-P6 RGB Tool (as of 2026-10-18, version 0.1.0)
+# Handover / project status – KM-P6 RGB Tool (as of 2026-11-08, version 0.1.1)
 
 Everything a new session needs to continue. Protocol details: `docs/PROTOCOL.md`, usage: `README.md`.
 
@@ -43,7 +43,14 @@ report is retried up to 4 times.
 
 A real shutdown with the new entry switched the LEDs off (Tom, 2026-10-18).
 
-Not yet: Linux on the pad. The GUI was checked by hand on the pad only for one case: after the button on the pad changed the
+Linux on the pad (Bazzite, kernel 7.2, 2026-11-08, version 0.1.1): the vendor interface has no endpoint, so the
+kernel creates no hidraw node for it (PROTOCOL.md "Linux"); 0.1.0 therefore reported "not found". Since 0.1.1 the
+tool falls back to usbfs control transfers (`transport/linux_usbfs.rs`). Checked: `info` finds
+`/dev/bus/usb/002/004`, static slot 3 (blue) shown, four parallel `set` commands go through the shared lock.
+The OpenRGB plugin [OpenRGB-KMP6-Plugin](https://github.com/Tom-8192/OpenRGB-KMP6-Plugin) uses the same transport
+and lock and drove all effects on the pad.
+
+Not yet on Linux: the GUI on the pad, the systemd unit. The GUI was checked by hand on the pad only for one case: after the button on the pad changed the
 effect, a click on the already selected effect tile sets it again (every click sends, see `app.rs`); the rest of the
 GUI only with `--fake` via `dev-screenshot` pictures.
 
@@ -79,5 +86,5 @@ The window saves itself as BMP after 30 frames and closes; the settings file dec
 
 ## Open
 
-1. Test on Linux (hidraw path, udev rule, systemd unit).
+1. Linux: GUI on the pad, systemd unit `kmp6-off.service`.
 4. Unknown: what the wave direction does; the levels 1 and 3 of neon/wave are interpolated, not measured.

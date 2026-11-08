@@ -63,7 +63,7 @@ cli.arg.set.slot: "angezeigte Farbe: Farbplatz 1–7 oder zyklus (alle im Wechse
 cli.arg.set.colors: "Farbe eines Farbplatzes, z. B. 2=blau, 3=#FF8000, 4=255,0,128 (mehrfach möglich)"
 cli.arg.color.slot: "Farbplatz 1–7"
 cli.arg.color.color: "Name, #RRGGBB oder R,G,B"
-cli.opt.device: "Gerätepfad (hidapi-Pfad oder /dev/hidrawN)"
+cli.opt.device: "Gerätepfad (hidapi-Pfad, /dev/hidrawN oder /dev/bus/usb/BBB/DDD)"
 cli.opt.lang: "Sprache der Ausgaben, z. B. en oder de (Standard: Systemsprache)"
 cli.opt.help: "Hilfe anzeigen"
 cli.opt.version: "Version anzeigen"
