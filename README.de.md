@@ -14,8 +14,7 @@ Inoffiziell, nicht mit Aukey oder G-aim verbunden.
 **Stand 0.1:** Alle Beleuchtungsfunktionen von G-aim: die Effekte Statisch, Welle, Atmen, Neon und Aus, Helligkeit
 (10 Stufen), Tempo (5 Stufen), Richtung der Welle, sieben Farbplätze und „alle Farben im Wechsel“. Die Pakete
 entsprechen genau G-aim Control Center 1.1.5 (aus dem Programm ermittelt, siehe [`docs/PROTOCOL.md`](docs/PROTOCOL.md))
-und wurden unter Windows am Pad geprüft. Unter Linux ist die Kommandozeile ebenfalls am Pad geprüft (seit 0.1.1), die
-Oberfläche dort noch nicht. Für OpenRGB unter Linux gibt es das
+und wurden unter Windows am Pad geprüft. Unter Linux sind Kommandozeile und Oberfläche ebenfalls am Pad geprüft (seit 0.1.1). Für OpenRGB unter Linux gibt es das
 [OpenRGB-KM-P6-Plugin](https://github.com/Tom-8192/OpenRGB-KMP6-Plugin).
 
 Gut zu wissen:
@@ -84,7 +83,7 @@ kmp6_rgbtool set --slot zyklus                  # alle sieben Farben im Wechsel
 kmp6_rgbtool color 2 blau                       # Name, #RRGGBB oder R,G,B
 kmp6_rgbtool off                                # LEDs aus, gespeicherte Einstellung bleibt
 kmp6_rgbtool on                                 # gespeicherte Einstellung erneut senden
-kmp6_rgbtool reset                              # Werkseinstellung von G-aim
+kmp6_rgbtool reset                              # Werkseinstellung (statisch rot, Farben von G-aim)
 kmp6_rgbtool next                               # einen Schritt weiter wie der Knopf am Pad
 kmp6_rgbtool set --mode neon --dry-run          # Pakete nur anzeigen
 ```

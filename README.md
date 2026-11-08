@@ -14,8 +14,7 @@ Unofficial, not affiliated with Aukey or G-aim.
 **Status 0.1:** All lighting functions of G-aim: the effects static, wave, breathe, neon and off, brightness (10
 levels), speed (5 levels), wave direction, seven colour slots and "cycle through all colours". The reports follow
 G-aim Control Center 1.1.5 exactly (worked out from the program, see [`docs/PROTOCOL.md`](docs/PROTOCOL.md)) and were
-checked on the pad under Windows. On Linux the command line was checked on the pad as well (since 0.1.1); the GUI
-has not been tried there yet. For OpenRGB on Linux see the
+checked on the pad under Windows. On Linux the command line and the GUI were checked on the pad as well (since 0.1.1). For OpenRGB on Linux see the
 [OpenRGB KM-P6 plugin](https://github.com/Tom-8192/OpenRGB-KMP6-Plugin).
 
 Good to know:
@@ -81,7 +80,7 @@ kmp6_rgbtool set --slot cycle                   # all seven colours in turn
 kmp6_rgbtool color 2 blue                       # name, #RRGGBB or R,G,B
 kmp6_rgbtool off                                # LEDs off, the stored setting stays
 kmp6_rgbtool on                                 # send the stored setting again
-kmp6_rgbtool reset                              # factory setting of G-aim
+kmp6_rgbtool reset                              # factory setting (static red, colours of G-aim)
 kmp6_rgbtool next                               # one step like the button on the pad
 kmp6_rgbtool set --mode neon --dry-run          # only print the reports
 ```

@@ -110,7 +110,8 @@ pub struct Settings {
     pub colors: [Rgb; SLOTS],
 }
 
-/// Factory state of G-aim (`setting/pD.bin`, section `[mousePad]`: `lightValue=0,9,4,1`, `isCycle=true`).
+/// Factory state of G-aim (`setting/pD.bin`, section `[mousePad]`: `lightValue=0,9,4,1`), except that the colour does
+/// not cycle (G-aim: `isCycle=true`): the tool starts with slot 1, Tom's choice (2026-11-08).
 impl Default for Settings {
     fn default() -> Self {
         Self {
@@ -118,7 +119,7 @@ impl Default for Settings {
             brightness: MAX_BRIGHTNESS,
             speed: MAX_SPEED,
             direction: Direction::Left,
-            cycle: true,
+            cycle: false,
             slot: 0,
             colors: FACTORY_COLORS,
         }
@@ -237,16 +238,23 @@ mod tests {
         s.packets().unwrap().iter().map(|p| hex(p)).collect()
     }
 
-    /// G-aim factory state: static, brightness 9 (= 32), cycle -> 0x70, speed 0 for static, everything twice.
+    /// Default: static, brightness 9 (= 32), slot 1 (colour byte 0x00), speed 0 for static, everything twice.
     #[test]
-    fn factory_static() {
+    fn default_static() {
         let once = [
             "09 00 ff 00 00 00 ff 00",
             "0a ff ff 00 00 ff ff 00",
             "0b ff 00 ff ff ff ff 00",
-            "08 00 20 00 70 ff 00 00",
+            "08 00 20 00 00 ff 00 00",
         ];
         assert_eq!(lines(&Settings::default()), [once, once].concat());
+    }
+
+    /// G-aim's factory state cycles: colour byte 0x70.
+    #[test]
+    fn cycle_byte() {
+        let s = Settings { cycle: true, ..Settings::default() };
+        assert_eq!(lines(&s)[3], "08 00 20 00 70 ff 00 00");
     }
 
     #[test]
@@ -290,7 +298,8 @@ mod tests {
         let first = neon.after_button();
         assert_eq!((first.mode, first.slot, first.cycle), (Mode::Static, 0, false));
         // static cycling counts as the last static step; off goes on with slot 2
-        assert_eq!(Settings::default().after_button().mode, Mode::Wave);
+        assert_eq!(Settings { cycle: true, ..Settings::default() }.after_button().mode, Mode::Wave);
+        assert_eq!(Settings::default().after_button().slot, 1);
         let off = Settings { mode: Mode::Off, brightness: 0, ..Settings::default() }.after_button();
         assert_eq!((off.mode, off.slot, off.brightness), (Mode::Static, 1, MAX_BRIGHTNESS));
     }

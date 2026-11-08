@@ -50,7 +50,11 @@ tool falls back to usbfs control transfers (`transport/linux_usbfs.rs`). Checked
 The OpenRGB plugin [OpenRGB-KMP6-Plugin](https://github.com/Tom-8192/OpenRGB-KMP6-Plugin) uses the same transport
 and lock and drove all effects on the pad.
 
-Not yet on Linux: the GUI on the pad, the systemd unit. The GUI was checked by hand on the pad only for one case: after the button on the pad changed the
+GUI on Linux (Tom, 2026-11-08, Wayland): effects, sliders, colour slots, quick colours, cycle on/off, "Pressed the
+button on the pad", settings remembered after a restart, log - all fine, also with OpenRGB and the KM-P6 plugin
+running at the same time. Tom's wish from that test: no colour cycling by default (`Settings::default`, cycle off).
+
+Not yet on Linux: the systemd unit. The GUI was checked by hand on the pad only for one case: after the button on the pad changed the
 effect, a click on the already selected effect tile sets it again (every click sends, see `app.rs`); the rest of the
 GUI only with `--fake` via `dev-screenshot` pictures.
 
@@ -86,5 +90,5 @@ The window saves itself as BMP after 30 frames and closes; the settings file dec
 
 ## Open
 
-1. Linux: GUI on the pad, systemd unit `kmp6-off.service`.
+1. Linux: systemd unit `kmp6-off.service`.
 4. Unknown: what the wave direction does; the levels 1 and 3 of neon/wave are interpolated, not measured.

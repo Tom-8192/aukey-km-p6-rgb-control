@@ -206,7 +206,7 @@ mod tests {
 
     #[test]
     fn static_cycle_steps_four_times_a_second() {
-        let s = Settings::default();
+        let s = Settings { cycle: true, ..Settings::default() };
         assert_eq!(color_at(&s, Zone::Edge, 0.1), Some(led(Color32::from_rgb(255, 0, 0))));
         assert_eq!(color_at(&s, Zone::Edge, 0.3), Some(led(Color32::from_rgb(0, 255, 0))));
     }
